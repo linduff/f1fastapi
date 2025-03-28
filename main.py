@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 import requests
 import redis
 import json
@@ -6,6 +7,18 @@ import json
 r = redis.Redis(host='localhost', port=6379, db=0)
 
 app = FastAPI()
+
+origins = [
+    "*"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/openf1/{method}/{q_params}")
 async def root(method: str, q_params: str):
@@ -23,5 +36,5 @@ def getDataFromCacheOrWeb(path):
     else:
         # print("Data not in cache. Fetching and adding to cache")
         res = requests.get(path)
-        r.setex(path, 60, json.dumps(res.json())) # Expires after 24 hours
+        r.setex(path, 86400, json.dumps(res.json())) # Expires after 24 hours
         return res.json()
