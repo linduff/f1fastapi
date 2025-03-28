@@ -18,10 +18,10 @@ async def root(path: str):
 def getDataFromCacheOrWeb(path):
     cached_data = r.get(path)
     if cached_data:
-        print("Returning cached data")
+        # print("Returning cached data")
         return json.loads(cached_data)
     else:
-        print("Data not in cache. Fetching and adding to cache")
+        # print("Data not in cache. Fetching and adding to cache")
         res = requests.get(path)
-        r.setex(path, 86400, json.dumps(res.json()))
+        r.setex(path, 60, json.dumps(res.json())) # Expires after 24 hours
         return res.json()
