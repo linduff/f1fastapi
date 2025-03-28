@@ -25,4 +25,3 @@ def getDataFromCacheOrWeb(path):
         res = requests.get(path)
         r.setex(path, 86400, json.dumps(res.json()))
         return res.json()
-
