@@ -20,6 +20,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/")
+async def help():
+    return {"text": "This API combines openf1 and jolpica in order to get all data necessary for creating an f1 webapp. Visit https://openf1.org and https://github.com/jolpica/jolpica-f1/blob/main/docs/README.md for more detail about each one. "}
+
 @app.get("/openf1/{method}/{q_params}")
 async def root(method: str, q_params: str):
     return getDataFromCacheOrWeb("https://api.openf1.org/v1/" + method + "?" + q_params)
@@ -27,6 +31,10 @@ async def root(method: str, q_params: str):
 @app.get("/jolpica/{path:path}")
 async def root(path: str):
     return getDataFromCacheOrWeb("https://api.jolpi.ca/" + path)
+
+@app.get("/healthcheck")
+async def healthcheck():
+    return {"healthy": True}
 
 def getDataFromCacheOrWeb(path):
     cached_data = r.get(path)
